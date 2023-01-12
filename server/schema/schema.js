@@ -7,6 +7,7 @@ const {
     GraphQLSchema,
     GraphQLID,
     GraphQLInt,
+    GraphQLFloat,
     GraphQLList
 } = graphql;
 
@@ -88,10 +89,39 @@ const CommentType = new GraphQLObjectType({
 });
 
 
-
 const RootQuery = new GraphQLObjectType({
     name: 'RootQueryType',
     fields: {
+        welcome: {
+            type: GraphQLString,
+            resolve(parent, args) {
+                return "Welcome to GraphQL"
+            }
+        },
+        arguments: {
+            type: GraphQLString,
+            args: { name: { type: GraphQLString }, age: {type: GraphQLInt}},
+            resolve(parent, args) {
+                return `Hey! ${args.name} you are ${args.age} years old today.`
+            }
+        },
+        random: {
+            type: GraphQLFloat,
+            resolve(parent, args) {
+                return Math.random();
+            }
+        },
+        rolldice: {
+            type: new GraphQLList(GraphQLInt),
+            args: { dice: { type: GraphQLInt }, slides: {type: GraphQLInt}},
+            resolve(parent, args) {
+                var output = [];
+                for (var i = 0; i < args.dice; i++) {
+                    output.push(1 + Math.floor(Math.random() * (args.slides || 6)));
+                }
+                return output;
+            }
+        },
         books: {
             type: new GraphQLList(BookType),
             resolve(parent, args) {
